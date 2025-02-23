@@ -1,0 +1,84 @@
+    /* Wizard Steps Styling */
+    .wizard > .steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .wizard > .steps > ul {
+        display: flex;
+        width: 100%;
+        padding: 0;
+    }
+
+    .wizard > .steps > ul > li {
+        list-style: none;
+        flex: 1;
+        text-align: center;
+    }
+
+    .wizard > .steps > ul > li a {
+        display: block;
+        padding: 12px;
+        background: #e0e0e0;
+        color: #333;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 10px;
+    }
+
+    .wizard > .steps > ul > li.current a {
+        background: #007bff;
+        color: white;
+    }
+
+    .wizard > .steps > ul > li.done a {
+        background: #28a745;
+        color: white;
+    }
+
+    /* Style the buttons */
+.wizard .actions a {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    transition: 0.3s ease-in-out;
+}
+
+/* Previous Button */
+.wizard .actions .previous {
+    background: #6c757d; /* Gray */
+    color: white;
+}
+
+.wizard .actions .previous:hover {
+    background: #5a6268; /* Darker gray */
+}
+
+/* Next Button */
+.wizard .actions .next {
+    background: #007bff; /* Blue */
+    color: white;
+}
+
+.wizard .actions .next:hover {
+    background: #0056b3; /* Darker blue */
+}
+
+/* Submit Button */
+.wizard .actions .finish {
+    background: #28a745; /* Green */
+    color: white;
+}
+
+.wizard .actions .finish:hover {
+    background: #218838; /* Darker green */
+}
+
+    .wizard .actions .disabled {
+        background: #ccc !important;
+        pointer-events: none;
+    }
