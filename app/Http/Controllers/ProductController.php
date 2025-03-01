@@ -16,12 +16,24 @@ class ProductController extends Controller
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
             $query->where('name', 'like', "%{$searchTerm}%")
-                  ->orWhere('category', 'like', "%{$searchTerm}%")
-                  ->orWhere('price', 'like', "%{$searchTerm}%");
+                ->orWhere('category', 'like', "%{$searchTerm}%")
+                ->orWhere('price', 'like', "%{$searchTerm}%");
         }
 
         $products = $query->paginate(10); // Adjust per page count as needed
+
+
+        // Check if the request expects a JSON response
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => $products
+            ], 200, ['Content-Type' => 'application/json']);
+        }
+
         return view('products.index', compact('products'));
+
+
     }
 
     // Show the form to create a new product
@@ -79,41 +91,41 @@ class ProductController extends Controller
 
     // Update an existing product in the database
     public function update(Request $request, $id)
-{
-    // Validate the incoming data
-    $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'category' => 'required|string|max:255',
-        'price' => 'required|numeric',
-        'stock' => 'required|integer',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
+    {
+        // Validate the incoming data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-    // Find the product by ID
-    $product = Product::findOrFail($id);
+        // Find the product by ID
+        $product = Product::findOrFail($id);
 
-    // Update the product data
-    $product->name = $validatedData['name'];
-    $product->category = $validatedData['category'];
-    $product->price = $validatedData['price'];
-    $product->stock = $validatedData['stock'];
+        // Update the product data
+        $product->name = $validatedData['name'];
+        $product->category = $validatedData['category'];
+        $product->price = $validatedData['price'];
+        $product->stock = $validatedData['stock'];
 
-    // Handle image update (if any)
-    if ($request->hasFile('image')) {
-        // Delete the old image if exists
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+        // Handle image update (if any)
+        if ($request->hasFile('image')) {
+            // Delete the old image if exists
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            // Store the new image
+            $product->image = $request->file('image')->store('products', 'public');
         }
 
-        // Store the new image
-        $product->image = $request->file('image')->store('products', 'public');
+        // Save the product updates
+        $product->save();
+
+        return response()->json(['success' => true]);
     }
-
-    // Save the product updates
-    $product->save();
-
-    return response()->json(['success' => true]);
-}
 
 
     // Delete a product from the database
