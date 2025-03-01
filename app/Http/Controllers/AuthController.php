@@ -51,17 +51,24 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Attempt to authenticate the user with JWT
-        if ($token = auth()->attempt($request->only('email', 'password'))) {
+        // Attempt to authenticate the user with the provided credentials
+        if (auth()->attempt($request->only('email', 'password'))) {
+            // If authentication is successful, generate a new JWT token
+            $user = auth()->user();
+            $token = JWTAuth::fromUser($user);
+
+            // Return the generated JWT token
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
             ]);
         }
 
-        // If authentication fails, return unauthorized message
+        // If authentication fails, return an unauthorized message
         return response()->json(['message' => 'Unauthorized'], 401);
     }
+
+
 
     /**
      * Logout the user (invalidate token).
